@@ -2,21 +2,69 @@
 // g++ -o city_skyline main.cpp
 
 #include <list>
+#include <map>
 
 class City
 {
 public:
-  struct Bldg
-  {
+  struct Bldg {
     Bldg(int x1, int x2, int y) : x1_(x1), x2_(x2), y_(y) {}
+    bool operator==(const Bldg& rhs) {
+      return ( x1_==rhs.x1_ && x2_==rhs.x2_ && y_==rhs.y_ );
+    }
     int x1_;
     int x2_;
     int y_;
   };
+  struct Point {
+    Point(int x, int y) : x_(x), y_(y) {}
+    int x_;
+    int y_;
+  };
+  typedef std::list<Point> Skyline;
   void addBldg(int x1, int x2, int y) {
     bldgs.push_back(Bldg(x1, x2, y));
   }
+  void getSkyline(Skyline& skyline) const {
+    BData xdata, ydata;
+    std::list<Bldg>::const_iterator b_it, b_endit=bldgs.end();
+    for ( b_it=bldgs.begin(); b_it!=b_endit; ++b_it ) {
+      xdata.insert(std::make_pair(b_it->x1_, *b_it));
+      xdata.insert(std::make_pair(b_it->x2_, *b_it));
+    }
+    BData::const_iterator x_it, x_endit=xdata.end(), y_it;
+    int last_x = -1;
+    for ( x_it=xdata.begin(); x_it!=x_endit; ++x_it ) {
+      int this_x = x_it->first;
+      if ( last_x != this_x ) {
+        // give the result for lastx
+        Point p(last_x, 0);
+        if ( ydata.begin() != (y_it=ydata.end()) ) {
+          p.y_ = (--y_it)->first;
+        }
+        skyline.push_back(p);
+      }
+      const Bldg& b = x_it->second;
+      if (this_x == b.x1_) { // start of building (leading edge)
+        ydata.insert(std::make_pair(b.y_, b));
+      }
+      else { //  this_x == b.x2_ end of building (trailing edge)
+        std::pair<BData::iterator, BData::iterator> eq_y =
+          ydata.equal_range(b.y_);
+        for ( ; eq_y.first!=eq_y.first; ++(eq_y.first) ) {
+          if ( eq_y.first->second == b ) {
+            ydata.erase(eq_y.first);
+            break;
+          }
+        }
+      }
+      last_x = this_x;
+    }
+    Point p(last_x, 0);
+    skyline.push_back(p);
+  }
 private:
+  typedef std::multimap<int, Bldg> BData;
   std::list<Bldg> bldgs;
 };
 
@@ -41,8 +89,8 @@ bool get_bldg_coords(int (&bldg_coords)[3], std::string& remnant)
         // should catch for value > INT_MAX
         bldg_coords[i] = boost::lexical_cast<int>(what[i+1]);
       }
-      if ( bldg_coords[0] <= bldg_coords[1] ) {
-        // knowledge that x1 <= x2 should be in City::Bldg ctor
+      if ( 0 <= bldg_coords[0] && bldg_coords[0] < bldg_coords[1] ) {
+        // constraint knowledge, 0 <= x1 < x2, should be in City::Bldg ctor
         gotten = true;
       }
     }
@@ -71,6 +119,10 @@ int main(int argc, char* argv[])
         handled = true;
         std::cout << "addBldg" << std::endl;
       }
+    }
+    else if ( cmd == "getSkyline" ) {
+      handled = true;
+      std::cout << "getSkyline" << std::endl;
     }
     else {
       std::getline(std::cin, remnant);
