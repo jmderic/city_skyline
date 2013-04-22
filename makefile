@@ -17,3 +17,6 @@ $(OBJS) : makefile
 
 city_skyline : $(OBJS)
 	$(CXX) $(COMMON_FLAGS) -o $@  $^ -L$(BOOST)/lib -lboost_regex -lc
+
+clean :
+	rm -f city_skyline $(OBJS) *~
