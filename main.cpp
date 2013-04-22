@@ -33,7 +33,7 @@ public:
       xdata.insert(std::make_pair(b_it->x2_, *b_it));
     }
     BData::const_iterator x_it, x_endit=xdata.end(), y_it;
-    int last_x = -1;
+    int last_x = -1, last_y = 0;
     for ( x_it=xdata.begin(); x_it!=x_endit; ++x_it ) {
       int this_x = x_it->first;
       if ( last_x != this_x ) {
@@ -42,7 +42,10 @@ public:
         if ( ydata.begin() != (y_it=ydata.end()) ) {
           p.y_ = (--y_it)->first;
         }
-        skyline.push_back(p);
+        if ( p.y_ != last_y ) {
+          skyline.push_back(p);
+          last_y = p.y_;
+        }
       }
       const Bldg& b = x_it->second;
       if (this_x == b.x1_) { // start of building (leading edge)
@@ -61,7 +64,7 @@ public:
       last_x = this_x;
     }
     Point p(last_x, 0);
-    skyline.push_back(p);
+    skyline.push_back(p); // don't need to check last_y if y_ > 0
   }
 private:
   typedef std::multimap<int, Bldg> BData;
@@ -89,8 +92,10 @@ bool get_bldg_coords(int (&bldg_coords)[3], std::string& remnant)
         // should catch for value > INT_MAX
         bldg_coords[i] = boost::lexical_cast<int>(what[i+1]);
       }
-      if ( 0 <= bldg_coords[0] && bldg_coords[0] < bldg_coords[1] ) {
-        // constraint knowledge, 0 <= x1 < x2, should be in City::Bldg ctor
+      if ( 0 <= bldg_coords[0] && bldg_coords[0] < bldg_coords[1]
+           && 0 < bldg_coords[2] ) {
+        // constraint knowledge, 0 <= x1 < x2 and y > 0, should be in City::Bldg
+        // ctor
         gotten = true;
       }
     }
