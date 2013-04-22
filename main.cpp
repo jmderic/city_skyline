@@ -38,13 +38,13 @@ public:
       int this_x = x_it->first;
       if ( last_x != this_x ) {
         // give the result for lastx
-        Point p(last_x, 0);
+        Point pt(last_x, 0);
         if ( ydata.begin() != (y_it=ydata.end()) ) {
-          p.y_ = (--y_it)->first;
+          pt.y_ = (--y_it)->first;
         }
-        if ( p.y_ != last_y ) {
-          skyline.push_back(p);
-          last_y = p.y_;
+        if ( pt.y_ != last_y ) {
+          skyline.push_back(pt);
+          last_y = pt.y_;
         }
       }
       const Bldg& b = x_it->second;
@@ -54,7 +54,7 @@ public:
       else { //  this_x == b.x2_ end of building (trailing edge)
         std::pair<BData::iterator, BData::iterator> eq_y =
           ydata.equal_range(b.y_);
-        for ( ; eq_y.first!=eq_y.first; ++(eq_y.first) ) {
+        for ( ; eq_y.first!=eq_y.second; ++(eq_y.first) ) {
           if ( eq_y.first->second == b ) {
             ydata.erase(eq_y.first);
             break;
@@ -63,13 +63,31 @@ public:
       }
       last_x = this_x;
     }
-    Point p(last_x, 0);
-    skyline.push_back(p); // don't need to check last_y if y_ > 0
+    Point pt(last_x, 0);
+    skyline.push_back(pt); // don't need to check last_y if y_ > 0
   }
 private:
   typedef std::multimap<int, Bldg> BData;
   std::list<Bldg> bldgs;
 };
+
+#include <ostream>
+
+std::ostream& operator<<(std::ostream& os, const City::Point& pt) {
+  os << '[' << pt.x_ << ", " << pt.y_ << ']';
+  return os;
+}
+
+std::ostream& operator<<(std::ostream& os, const City::Skyline& skyline) {
+  City::Skyline::const_iterator skl_it = skyline.begin(),
+    skl_beginit = skl_it, skl_endit = skyline.end();
+  for ( ; skl_it!=skl_endit; ++skl_it ) {
+    if ( skl_it!=skl_beginit )
+      os << ", ";
+    os << *skl_it;
+  }
+  return os;
+}
 
 #include <iostream>
 #include <string>
@@ -114,20 +132,23 @@ int main(int argc, char* argv[])
     std::cout << "city >> " << std::flush;
     std::cin >> cmd;
     if ( cmd == "quit" ) {
-      quit = handled = true;
       std::cout << "done" << std::endl;
+      quit = handled = true;
     }
     else if ( cmd == "addBldg" ) {
       int bldg_coords[3];
       if ( get_bldg_coords(bldg_coords, remnant) ) {
         c.addBldg(bldg_coords[0], bldg_coords[1], bldg_coords[2]);
+        std::cout << "addBldg [x1, x2, y] = [" << bldg_coords[0] << ", "
+          << bldg_coords[1] << ", " <<  bldg_coords[2] << ']' << std::endl;
         handled = true;
-        std::cout << "addBldg" << std::endl;
       }
     }
     else if ( cmd == "getSkyline" ) {
+      City::Skyline skyline;
+      c.getSkyline(skyline);
+      std::cout << "getSkyline\n" << skyline << std::endl;
       handled = true;
-      std::cout << "getSkyline" << std::endl;
     }
     else {
       std::getline(std::cin, remnant);

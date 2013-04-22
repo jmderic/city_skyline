@@ -6,12 +6,14 @@
 
 SRCS=main.cpp
 OBJS=$(SRCS:%.cpp=%.o)
+#COMMON_FLAGS=-g
 
 all : city_skyline
 
 %.o : %.cpp
-	$(CXX) -I$(BOOST)/include -c $< -o $@
+	$(CXX) $(COMMON_FLAGS) -I$(BOOST)/include -c $< -o $@
 
+$(OBJS) : makefile
 
 city_skyline : $(OBJS)
-	$(CXX) -o $@  $^ -L$(BOOST)/lib -lboost_regex -lc
+	$(CXX) $(COMMON_FLAGS) -o $@  $^ -L$(BOOST)/lib -lboost_regex -lc
