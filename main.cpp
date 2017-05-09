@@ -1,4 +1,4 @@
-// $Id$ get this working on git
+// -*- c-basic-offset: 2 -*-
 
 #include <list>
 #include <map>
@@ -26,8 +26,8 @@ public:
   }
   void getSkyline(Skyline& skyline) const {
     BData xdata, ydata;
-    // fill out the xdata multimap with all the interesting points on the x-axis
-    // and the associated building
+    // fill the xdata multimap two entries per building: one key for the leading
+    // edge; the other key, trailing; the building is the value for both entries
     std::list<Bldg>::const_iterator b_it, b_endit=bldgs.end();
     for ( b_it=bldgs.begin(); b_it!=b_endit; ++b_it ) {
       xdata.insert(std::make_pair(b_it->x1_, *b_it));
@@ -36,13 +36,29 @@ public:
     // walk the x values in order, adding or deleting a building from the ydata
     // collection for each node.  Report changes in the largest y value; those
     // changes define the skyline.
-    BData::const_iterator x_it, x_endit=xdata.end(), y_it;
-    int last_x = -1, last_y = 0;
-    for ( x_it=xdata.begin(); x_it!=x_endit; ++x_it ) {
+    BData::const_iterator x_it, nextx_it, x_endit=xdata.end(), y_it;
+    int last_y = 0;
+    for ( x_it=xdata.begin(), nextx_it=x_it; x_it!=x_endit; ++x_it ) {
       int this_x = x_it->first;
-      if ( last_x != this_x ) {
-        // if y max changed, push_back the result for last_x
-        Point pt(last_x, 0);
+      const Bldg& b = x_it->second;
+      if (this_x == b.x1_) { // start of building (leading edge) insert it
+        ydata.insert(std::make_pair(b.y_, b));
+      }
+      else { //  this_x == b.x2_ end of building (trailing edge) erase it
+        std::pair<BData::iterator, BData::iterator> eq_y =
+          ydata.equal_range(b.y_);
+        // several buildings could have this y value, erase the right one
+        for ( ; eq_y.first!=eq_y.second; ++(eq_y.first) ) {
+          if ( eq_y.first->second == b ) {
+            ydata.erase(eq_y.first);
+            break;
+          }
+        }
+      }
+      if ( ++nextx_it == x_endit || nextx_it->first != this_x ) {
+        // the next x value is the end _or_ it is different from this one;
+        // so test now whether y max changed, generate a result if it did
+        Point pt(this_x, 0);
         if ( ydata.begin() != (y_it=ydata.end()) ) {
           pt.y_ = (--y_it)->first;
         }
@@ -51,24 +67,7 @@ public:
           last_y = pt.y_;
         }
       }
-      const Bldg& b = x_it->second;
-      if (this_x == b.x1_) { // start of building (leading edge) insert it
-        ydata.insert(std::make_pair(b.y_, b));
-      }
-      else { //  this_x == b.x2_ end of building (trailing edge) erase it
-        std::pair<BData::iterator, BData::iterator> eq_y =
-          ydata.equal_range(b.y_);
-        for ( ; eq_y.first!=eq_y.second; ++(eq_y.first) ) {
-          if ( eq_y.first->second == b ) {
-            ydata.erase(eq_y.first);
-            break;
-          }
-        }
-      }
-      last_x = this_x;
     }
-    Point pt(last_x, 0);
-    skyline.push_back(pt); // no last_y check needed if no zero height buildings
   }
 private:
   typedef std::multimap<int, Bldg> BData;
