@@ -1,13 +1,13 @@
-#ifndef CITY_HPP__
-#define CITY_HPP__
+/* Copyright 2013-2021 J. Mark Deric */
+#ifndef CITY_H_
+#define CITY_H_
 
 #include <list>
 #include <iosfwd>
 #include <memory>
 
-class City
-{
-public:
+class City {
+ public:
     City();
     ~City();
     struct Point {
@@ -16,10 +16,9 @@ public:
         int y_;
     };
     using Skyline = std::list<Point>;
-    //typedef std::list<Point> Skyline;
     void addBldg(int x1, int x2, int y);
     void getSkyline(Skyline& skyline) const;
-private:
+ private:
     class impl;
     std::unique_ptr<impl> pimpl_;
 };
@@ -27,4 +26,4 @@ private:
 std::ostream& operator<<(std::ostream& os, const City::Point& pt);
 std::ostream& operator<<(std::ostream& os, const City::Skyline& skyline);
 
-#endif // CITY_HPP__
+#endif  // CITY_H_
