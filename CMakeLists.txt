@@ -19,7 +19,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 # https://cmake.org/cmake/help/v3.10/module/FindBoost.html
 find_package(Boost 1.65 REQUIRED COMPONENTS regex)
-message("OpenSSL include dir: ${Boost_INCLUDE_DIRS}")
+message("Boost include dir: ${Boost_INCLUDE_DIRS}")
 
 
 ## PROJECT specific

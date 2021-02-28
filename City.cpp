@@ -56,8 +56,9 @@ public:
                 }
             }
         }
-        /*
-        */
+        Point first = skyline.front();
+        first.y_ = 0;
+        skyline.push_front(first);
     }
 private:
     struct Bldg {
@@ -73,6 +74,7 @@ private:
     std::list<Bldg> bldgs;
 };
 
+// connectors to the city class and trivial implementations
 City::City() : pimpl_(new City::impl()) {}
 
 City::~City() = default;
@@ -89,7 +91,7 @@ void City::getSkyline(Skyline& skyline) const
     pimpl_->getSkyline(skyline);
 }
 
-
+// externals
 std::ostream& operator<<(std::ostream& os, const City::Point& pt) {
     os << '[' << pt.x_ << ", " << pt.y_ << ']';
     return os;
