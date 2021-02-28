@@ -7,7 +7,7 @@
 #include <list>
 
 class City::impl {
-public:
+ public:
     void addBldg(int x1, int x2, int y) {
         bldgs.push_back(Bldg(x1, x2, y));
     }
@@ -61,7 +61,7 @@ public:
         first.y_ = 0;
         skyline.push_front(first);
     }
-private:
+ private:
     struct Bldg {
         Bldg(int x1, int x2, int y) : x1_(x1), x2_(x2), y_(y) {}
         bool operator==(const Bldg& rhs) {
