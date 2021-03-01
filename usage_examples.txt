@@ -7,7 +7,7 @@ city >> addBldg 7 9 14
 addBldg [x1, x2, y] = [7, 9, 14]
 city >> getSkyline
 getSkyline
-[2, 0], [2, 4], [5, 5], [7, 14], [9, 5], [10, 0]
+[2, 4], [5, 5], [7, 14], [9, 5], [10, 0]
 city >> quit
 done
 [mark@SkullNUC37 city_skyline_build_20210227_201140]$ ./CitySkyline
@@ -21,7 +21,7 @@ city >> addBldg 8 12 9
 addBldg [x1, x2, y] = [8, 12, 9]
 city >> getSkyline
 getSkyline
-[2, 0], [2, 4], [5, 7], [7, 12], [10, 9], [12, 7], [15, 0]
+[2, 4], [5, 7], [7, 12], [10, 9], [12, 7], [15, 0]
 city >> quit
 done
 [mark@SkullNUC37 city_skyline_build_20210227_201140]$ 

@@ -56,9 +56,6 @@ class City::impl {
                 }
             }
         }
-        Point first = skyline.front();
-        first.y_ = 0;
-        skyline.push_front(first);
     }
  private:
     struct Bldg {
