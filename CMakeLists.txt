@@ -18,7 +18,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # finding distrib libraries we want
 
 # https://cmake.org/cmake/help/v3.10/module/FindBoost.html
-find_package(Boost 1.65 REQUIRED COMPONENTS regex)
+find_package(Boost 1.65 REQUIRED)
 message("Boost include dir: ${Boost_INCLUDE_DIRS}")
 
 
@@ -78,8 +78,3 @@ endif(LSAN_ENABLED)
 add_executable(CitySkyline ${CitySkyline_SOURCES})
 
 target_compile_options(CitySkyline PRIVATE -Werror -Wall -Wextra)
-
-target_link_libraries(
-    CitySkyline
-    Boost::regex
-    )

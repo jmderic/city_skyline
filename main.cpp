@@ -1,10 +1,10 @@
 /* Copyright 2013-2021 J. Mark Deric */
 
 #include "City.h"
+#include <boost/lexical_cast.hpp>
 #include <iostream>  // cin, cout, ostream
 #include <string>
-#include <boost/regex.hpp>
-#include <boost/lexical_cast.hpp>
+#include <regex>
 
 
 std::ostream& operator<<(std::ostream& os, const City::Point& pt) {
@@ -25,18 +25,18 @@ std::ostream& operator<<(std::ostream& os, const City::Skyline& skyline) {
 }
 
 bool get_bldg_coords(int (&bldg_coords)[3], std::string& remnant) {
-    static boost::regex e("^\\h*(\\d+)\\h+(\\d+)\\h+(\\d+)\\h*$");
+    static std::regex re(R"(^\s*(\d+)\s+(\d+)\s+(\d+)\s*$)");
     bool gotten = false;
     std::getline(std::cin, remnant);
     if ( !std::cin.good() ) {
         remnant += " <cin stream fails>";
         std::cin.clear();
     } else if ( !remnant.empty() ) {
-        boost::smatch what;
-        if ( boost::regex_match(remnant, what, e ) ) {
+        std::smatch m;
+        if ( std::regex_match(remnant, m, re) ) {
             for ( int i = 0; i < 3; ++i ) {
                 // should catch for value > INT_MAX
-                bldg_coords[i] = boost::lexical_cast<int>(what[i+1]);
+                bldg_coords[i] = boost::lexical_cast<int>(m[i+1]);
             }
             if ( 0 <= bldg_coords[0] && bldg_coords[0] < bldg_coords[1]
                  && 0 < bldg_coords[2] ) {
