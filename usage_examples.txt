@@ -1,0 +1,27 @@
+[mark@laguna06 city_skyline]$ ./city_skyline
+city >> addBldg 5 10 5
+addBldg [x1, x2, y] = [5, 10, 5]
+city >> addBldg 2 7 4
+addBldg [x1, x2, y] = [2, 7, 4]
+city >> addBldg 7 9 14
+addBldg [x1, x2, y] = [7, 9, 14]
+city >> getSkyline
+getSkyline
+[2, 4], [5, 5], [7, 14], [9, 5], [10, 0]
+city >> quit
+done
+[mark@laguna06 city_skyline]$ ./city_skyline
+city >> addBldg 5 15 7
+addBldg [x1, x2, y] = [5, 15, 7]
+city >> addBldg 2 8 4
+addBldg [x1, x2, y] = [2, 8, 4]
+city >> addBldg 7 10 12
+addBldg [x1, x2, y] = [7, 10, 12]
+city >> addBldg 8 12 9
+addBldg [x1, x2, y] = [8, 12, 9]
+city >> getSkyline
+getSkyline
+[2, 4], [5, 7], [7, 12], [10, 9], [12, 7], [15, 0]
+city >> quit
+done
+[mark@laguna06 city_skyline]$ 
