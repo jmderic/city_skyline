@@ -1,6 +1,6 @@
 /* Copyright 2013-2021 J. Mark Deric */
-#include "City.h"
 
+#include "City.h"
 #include <iostream>  // cin, cout, ostream
 #include <string>
 #include <boost/regex.hpp>
@@ -13,12 +13,13 @@ std::ostream& operator<<(std::ostream& os, const City::Point& pt) {
 }
 
 std::ostream& operator<<(std::ostream& os, const City::Skyline& skyline) {
-    City::Skyline::const_iterator skl_it = skyline.begin(),
-        skl_beginit = skl_it, skl_endit = skyline.end();
-    for ( ; skl_it != skl_endit; ++skl_it ) {
-        if ( skl_it != skl_beginit )
+    bool not_1st_pass = false;
+    for (auto& pt : skyline) {
+        if (not_1st_pass)
             os << ", ";
-        os << *skl_it;
+        else
+            not_1st_pass = true;
+        os << pt;
     }
     return os;
 }

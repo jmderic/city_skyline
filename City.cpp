@@ -8,23 +8,23 @@
 class City::impl {
  public:
     void addBldg(int x1, int x2, int y) {
-        bldgs.push_back(Bldg(x1, x2, y));
+        bldgs_.push_back(Bldg(x1, x2, y));
     }
     void getSkyline(City::Skyline& skyline) const {
         BData xdata, ydata;
-        // fill the xdata multimap two entries per building: one key for the
-        // leading edge; the other key, trailing; the building is the value for
-        // both entries
-        std::list<Bldg>::const_iterator b_it, b_endit = bldgs.end();
-        for ( b_it=bldgs.begin(); b_it != b_endit; ++b_it ) {
-            xdata.insert(std::make_pair(b_it->x1_, *b_it));
-            xdata.insert(std::make_pair(b_it->x2_, *b_it));
+        // fill the xdata multimap with two entries per building: one key for
+        // the leading edge; the other key, trailing; the building is the value
+        for (const auto& b : bldgs_) {
+            xdata.emplace(b.x1_, b);
+            xdata.emplace(b.x2_, b);
         }
         // walk the x values in order, adding or deleting a building from the
-        // ydata collection for each node.  Report changes in the largest y
-        // value; those changes define the skyline.
-        BData::const_iterator x_it, nextx_it, x_endit = xdata.end(), y_it;
+        // ydata collection for each step.  Report changes in the largest y
+        // value; those changes define the skyline
         int last_y = 0;
+        BData::const_iterator x_it, nextx_it, x_endit = xdata.end(), y_it;
+        // iterators work better for this loop than range based because the
+        // nextx_it look ahead is convenient
         for ( x_it=xdata.begin(), nextx_it = x_it; x_it != x_endit; ++x_it ) {
             int this_x = x_it->first;
             const Bldg& b = x_it->second;
@@ -44,8 +44,7 @@ class City::impl {
             }
             if ( ++nextx_it == x_endit || nextx_it->first != this_x ) {
                 // the next x value is the end _or_ it is different from this
-                // one; so test now whether y max changed, generate a result if
-                // it did
+                // one; so test whether y max changed; add a point if it did
                 City::Point pt(this_x, 0);
                 if ( ydata.begin() != (y_it=ydata.end()) ) {
                     pt.y_ = (--y_it)->first;
@@ -68,10 +67,10 @@ class City::impl {
         int y_;
     };
     typedef std::multimap<int, Bldg> BData;
-    std::list<Bldg> bldgs;
+    std::list<Bldg> bldgs_;
 };
 
-// connectors to the city class and trivial implementations
+// City class connectors to the impl class and misc implementations
 City::City() : pimpl_(new City::impl()) {}
 
 City::~City() = default;
