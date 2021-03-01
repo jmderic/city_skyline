@@ -2,7 +2,6 @@
 
 #include "City.h"
 #include <map>  // multimap
-#include <ostream>
 #include <utility>  // pair
 #include <list>
 
@@ -88,21 +87,4 @@ void City::addBldg(int x1, int x2, int y) {
 
 void City::getSkyline(Skyline& skyline) const {
     pimpl_->getSkyline(skyline);
-}
-
-// externals
-std::ostream& operator<<(std::ostream& os, const City::Point& pt) {
-    os << '[' << pt.x_ << ", " << pt.y_ << ']';
-    return os;
-}
-
-std::ostream& operator<<(std::ostream& os, const City::Skyline& skyline) {
-    City::Skyline::const_iterator skl_it = skyline.begin(),
-        skl_beginit = skl_it, skl_endit = skyline.end();
-    for ( ; skl_it != skl_endit; ++skl_it ) {
-        if ( skl_it != skl_beginit )
-            os << ", ";
-        os << *skl_it;
-    }
-    return os;
 }

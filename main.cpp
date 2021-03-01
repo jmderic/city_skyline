@@ -1,10 +1,27 @@
 /* Copyright 2013-2021 J. Mark Deric */
 #include "City.h"
 
-#include <iostream>  // std::cin, std::cout
+#include <iostream>  // cin, cout, ostream
 #include <string>
 #include <boost/regex.hpp>
 #include <boost/lexical_cast.hpp>
+
+
+std::ostream& operator<<(std::ostream& os, const City::Point& pt) {
+    os << '[' << pt.x_ << ", " << pt.y_ << ']';
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os, const City::Skyline& skyline) {
+    City::Skyline::const_iterator skl_it = skyline.begin(),
+        skl_beginit = skl_it, skl_endit = skyline.end();
+    for ( ; skl_it != skl_endit; ++skl_it ) {
+        if ( skl_it != skl_beginit )
+            os << ", ";
+        os << *skl_it;
+    }
+    return os;
+}
 
 bool get_bldg_coords(int (&bldg_coords)[3], std::string& remnant) {
     static boost::regex e("^\\h*(\\d+)\\h+(\\d+)\\h+(\\d+)\\h*$");

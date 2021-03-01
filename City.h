@@ -3,7 +3,6 @@
 #define CITY_H_
 
 #include <list>
-#include <iosfwd>
 #include <memory>
 
 class City {
@@ -22,8 +21,5 @@ class City {
     class impl;
     std::unique_ptr<impl> pimpl_;
 };
-
-std::ostream& operator<<(std::ostream& os, const City::Point& pt);
-std::ostream& operator<<(std::ostream& os, const City::Skyline& skyline);
 
 #endif  // CITY_H_
