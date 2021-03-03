@@ -56,6 +56,7 @@ class City::impl {
             }
         }
     }
+
  private:
     struct Bldg {
         Bldg(int x1, int x2, int y) : x1_(x1), x2_(x2), y_(y) {}
