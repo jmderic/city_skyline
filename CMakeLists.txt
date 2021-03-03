@@ -1,3 +1,5 @@
+# Copyright 2021 J. Mark Deric
+
 # only one tested
 cmake_minimum_required (VERSION 3.10)
 
@@ -78,3 +80,6 @@ endif(LSAN_ENABLED)
 add_executable(CitySkyline ${CitySkyline_SOURCES})
 
 target_compile_options(CitySkyline PRIVATE -Werror -Wall -Wextra)
+
+## testing gtest integration
+add_subdirectory(test)
